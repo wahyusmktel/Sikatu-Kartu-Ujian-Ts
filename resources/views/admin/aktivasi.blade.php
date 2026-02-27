@@ -113,22 +113,56 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
-                        <div class="pull-left">
-                            <div class="form-group">
-                                <label>Filter Aktivasi</label>
-                                <div class="select2-input">
-                                    <form action="{{ route('admin.aktivasi') }}" method="GET">
-                                        <select id="filterAktivasi" name="status_filter" class="form-control" onchange="this.form.submit()">
-                                            <option value="">- Pilih Status Aktivasi -</option>
-                                            <option value="true" {{ request('status_filter') == 'true' ? 'selected' : '' }}>Sudah Aktivasi</option>
-                                            <option value="false" {{ request('status_filter') == 'false' ? 'selected' : '' }}>Belum Aktivasi</option>
-                                        </select>
-                                    </form>
-                                </div>
+                     <div class="card-header">
+                        <div class="pull-left d-flex align-items-end flex-wrap" style="gap:12px;">
+
+                            {{-- Filter Aktivasi --}}
+                            <div class="form-group mb-0">
+                                <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;">
+                                    <i class="fa fa-toggle-on"></i> Filter Aktivasi
+                                </label>
+                                <form action="{{ route('admin.aktivasi') }}" method="GET" id="formStatusFilter">
+                                    <input type="hidden" name="rombel_filter" value="{{ $rombelFilter ?? '' }}">
+                                    <input type="hidden" name="cari" value="{{ $cari ?? '' }}">
+                                    <select id="filterAktivasi" name="status_filter" class="form-control form-control-sm"
+                                        style="border-radius:8px;min-width:170px;" onchange="this.form.submit()">
+                                        <option value="">— Semua Status —</option>
+                                        <option value="true"  {{ ($statusFilter ?? '') == 'true'  ? 'selected' : '' }}>✅ Sudah Aktivasi</option>
+                                        <option value="false" {{ ($statusFilter ?? '') == 'false' ? 'selected' : '' }}>❌ Belum Aktivasi</option>
+                                    </select>
+                                </form>
                             </div>
-                            
-                         </div>
+
+                            {{-- Filter Kelas --}}
+                            <div class="form-group mb-0">
+                                <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;">
+                                    <i class="fa fa-users"></i> Filter Kelas
+                                </label>
+                                <form action="{{ route('admin.aktivasi') }}" method="GET" id="formRombelFilter">
+                                    <input type="hidden" name="status_filter" value="{{ $statusFilter ?? '' }}">
+                                    <input type="hidden" name="cari" value="{{ $cari ?? '' }}">
+                                    <select name="rombel_filter" class="form-control form-control-sm"
+                                        style="border-radius:8px;min-width:180px;" onchange="this.form.submit()">
+                                        <option value="">— Semua Kelas —</option>
+                                        @foreach($rombels as $rombel)
+                                            <option value="{{ $rombel->id }}" {{ ($rombelFilter ?? '') == $rombel->id ? 'selected' : '' }}>
+                                                {{ $rombel->nama_rombel }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                            </div>
+
+                            {{-- Tombol Reset Filter --}}
+                            @if($statusFilter || $rombelFilter)
+                            <div class="form-group mb-0" style="align-self:flex-end;">
+                                <a href="{{ route('admin.aktivasi') }}" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;height:31px;line-height:1.4;">
+                                    <i class="fa fa-times"></i> Reset
+                                </a>
+                            </div>
+                            @endif
+
+                        </div>
                          
                                                
                         <div class="pull-right">
@@ -246,7 +280,7 @@
                         </table>
                         <!-- Paginasi -->
                         {{-- {{ $kartuUjians->appends(['cari' => $cari])->links('vendor.pagination.custom') }} --}}
-                        {{ $kartuUjians->appends(['cari' => $cari, 'status_filter' => $statusFilter])->links('vendor.pagination.custom') }}                         
+                        {{ $kartuUjians->appends(['cari' => $cari, 'status_filter' => $statusFilter, 'rombel_filter' => $rombelFilter])->links('vendor.pagination.custom') }}                         
                     </div>
                 </div>
             </div>

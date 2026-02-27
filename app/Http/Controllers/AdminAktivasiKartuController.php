@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\KartuUjian;
 use App\Models\AdminUjian;
 use App\Models\AdminSiswa;
+use App\Models\AdminRombel;
 use App\Models\AdminAktivasiKartu;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SiswaAktivasiExport;
@@ -34,12 +35,13 @@ class AdminAktivasiKartuController extends Controller
             ->orWhereDoesntHave('aktivasiKartu');
         })->count();        
         
-        $cari = $request->cari;
-        $dataPerPage = $request->input('dataPerPage', 10);
+        $cari         = $request->cari;
+        $dataPerPage  = $request->input('dataPerPage', 10);
         $statusFilter = $request->input('status_filter');
+        $rombelFilter = $request->input('rombel_filter');
 
         // Ambil data kartu ujian dengan relasi ujian dan siswa
-        $kartuUjians = KartuUjian::with(['ujian', 'siswa', 'aktivasiKartu'])
+        $kartuUjians = KartuUjian::with(['ujian', 'siswa', 'siswa.rombel', 'aktivasiKartu'])
             ->whereHas('ujian', function($query) {
                 $query->where('status', true);
             })
@@ -52,20 +54,18 @@ class AdminAktivasiKartuController extends Controller
                     })
                     ->orWhereHas('siswa', function($q) use ($cariLower) {
                         $q->whereRaw('LOWER(nama) LIKE ?', [$cariLower])
-                        ->orWhereRaw('LOWER(rombel_saat_ini) LIKE ?', [$cariLower]);
+                          ->orWhereRaw('LOWER(rombel_saat_ini) LIKE ?', [$cariLower]);
                     })
                     ->orWhereRaw('LOWER(username_ujian) LIKE ?', [$cariLower])
                     ->orWhereRaw('LOWER(password_ujian) LIKE ?', [$cariLower]);
                 });
-            })            
-            
-
+            })
             ->when($statusFilter, function($query) use ($statusFilter) {
-                if ($statusFilter == "true") {
+                if ($statusFilter == 'true') {
                     return $query->whereHas('aktivasiKartu', function($q) {
                         $q->where('status_aktivasi', true);
                     });
-                } else if ($statusFilter == "false") {
+                } elseif ($statusFilter == 'false') {
                     return $query->where(function($q) {
                         $q->whereHas('aktivasiKartu', function($subQuery) {
                             $subQuery->where('status_aktivasi', false);
@@ -74,16 +74,30 @@ class AdminAktivasiKartuController extends Controller
                     });
                 }
             })
-
+            ->when($rombelFilter, function($query) use ($rombelFilter) {
+                return $query->whereHas('siswa', function($q) use ($rombelFilter) {
+                    $q->where('rombel_id', $rombelFilter);
+                });
+            })
             ->paginate($dataPerPage);
 
-        // Ambil data ujian yang statusnya true
+        // Ujian aktif
         $ujianAktif = AdminUjian::where('status', true)->first();
 
-        // Ambil semua siswa
+        // Daftar rombel aktif untuk filter dropdown
+        $rombels = AdminRombel::where('status', true)
+            ->orderBy('tingkat_rombel')
+            ->orderBy('nama_rombel')
+            ->get();
+
+        // Semua siswa
         $semuaSiswa = AdminSiswa::all();
 
-        return view('admin.aktivasi', compact('kartuUjians', 'cari', 'ujianAktif', 'semuaSiswa', 'statusFilter', 'totalAktivasi', 'totalBelumAktivasi'));
+        return view('admin.aktivasi', compact(
+            'kartuUjians', 'cari', 'ujianAktif', 'semuaSiswa',
+            'statusFilter', 'rombelFilter', 'rombels',
+            'totalAktivasi', 'totalBelumAktivasi'
+        ));
     }
     
     public function insert(Request $request)
