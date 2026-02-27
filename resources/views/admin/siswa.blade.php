@@ -57,7 +57,17 @@
                                                         <input type="file" class="custom-file-input" id="fileImport" name="file" accept=".xlsx,.xls" required>
                                                         <label class="custom-file-label" for="fileImport">Pilih file...</label>
                                                     </div>
-                                                    <small class="form-text text-muted">
+                                                    <div class="mt-3 p-3 bg-light border-left border-primary rounded" style="border-left-width: 4px !important;">
+                                                        <p class="mb-2 text-dark font-weight-bold" style="font-size: 13px;">
+                                                            <i class="fas fa-lightbulb text-warning mr-1"></i> Panduan Singkat:
+                                                        </p>
+                                                        <p class="mb-0 text-muted" style="font-size: 12px; line-height: 1.6;">
+                                                            Anda dapat menyalin seluruh data pada <strong>Dapodik Siswa</strong> secara keseluruhan atau utuh ke dalam format excel diatas dan langsung mengimportnya. 
+                                                            <br><br>
+                                                            <i class="fas fa-check-circle text-success mr-1"></i> <strong>Penting:</strong> Data rombel juga akan terimport secara otomatis sehingga Anda tidak perlu menambahkan data rombel secara manual.
+                                                        </p>
+                                                    </div>
+                                                    <small class="form-text text-muted mt-3">
                                                         Silahkan download format excel import <a href="{{ asset('Format_Import_Siswa.xlsx') }}" class="text-primary fw-bold" download>Klik Disini</a>
                                                     </small>
                                                 </div>
