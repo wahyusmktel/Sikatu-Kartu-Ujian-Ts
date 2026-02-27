@@ -61,10 +61,18 @@
                                     {{-- <td colspan="5">Belum ada data kartu ujian untuk ujian yang aktif. Silahkan Hubungi admin <a href="https://wa.me/6282372605566?text=Hai%2C%20Nama%20saya%20{{ $kartu->siswa->nama }}%20dari%20kelas%20{{ $kartu->siswa->rombel_saat_ini }}%20ingin%20melakukan%20aktivasi%20kartu%20ujian%20pada%20{{ $kartu->ujian->nama_ujian }}.%20Terimakasih.">Klik Disini</a></td> --}}
                                     <td colspan="5">
                                         Belum ada data kartu ujian untuk ujian yang aktif. 
+                                        @php
+                                            $adminWA = $setting->no_hp_admin ?? '6282372605566';
+                                            $cleanWA = preg_replace('/[^0-9]/', '', $adminWA);
+                                            // Handle leading 0 to 62 if needed
+                                            if (strpos($cleanWA, '0') === 0) {
+                                                $cleanWA = '62' . substr($cleanWA, 1);
+                                            }
+                                        @endphp
                                         @if($lastKartuForSiswa)
-                                            Silahkan Hubungi admin <a href="https://wa.me/6282372605566?text=Hai%2C%20Nama%20saya%20{{ $lastKartuForSiswa->siswa->nama }}%20dari%20kelas%20{{ $lastKartuForSiswa->siswa->rombel_saat_ini }}%20ingin%20melakukan%20aktivasi%20kartu%20ujian%20pada%20{{ $lastKartuForSiswa->ujian->nama_ujian }}.%20Terimakasih.">Klik Disini</a>
+                                            Silahkan Hubungi admin <a href="https://wa.me/{{ $cleanWA }}?text=Hai%2C%20Nama%20saya%20{{ $lastKartuForSiswa->siswa->nama }}%20dari%20kelas%20{{ $lastKartuForSiswa->siswa->rombel_saat_ini }}%20ingin%20melakukan%20aktivasi%20kartu%20ujian%20pada%20{{ $lastKartuForSiswa->ujian->nama_ujian }}.%20Terimakasih.">Klik Disini</a>
                                         @else
-                                            Silahkan Hubungi admin <a href="https://wa.me/6282372605566">Klik Disini</a> untuk informasi lebih lanjut.
+                                            Silahkan Hubungi admin <a href="https://wa.me/{{ $cleanWA }}">Klik Disini</a> untuk informasi lebih lanjut.
                                         @endif
                                     </td>
                                 </tr>

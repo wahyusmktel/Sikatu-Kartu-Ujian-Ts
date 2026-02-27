@@ -36,8 +36,10 @@ class AdminSettingsController extends Controller
             'nama_sekolah'   => 'required|string|max:255',
             'nama_kepsek'    => 'required|string|max:255',
             'no_hp_sekolah'  => 'required|string|max:15',
+            'no_hp_cs'       => 'required|string|max:15',
+            'no_hp_admin'    => 'required|string|max:15',
             'email_sekolah'  => 'required|email|max:255',
-            'logo_sekolah'   => 'sometimes|image|max:2048', // Anda mungkin ingin menyesuaikan validasi ini sesuai kebutuhan
+            'logo_sekolah'   => 'sometimes|image|max:2048', 
             'npsn'           => 'required|string|max:50',
             'alamat_sekolah' => 'required|string|max:500',
         ]);

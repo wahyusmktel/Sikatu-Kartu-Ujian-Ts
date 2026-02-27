@@ -16,7 +16,7 @@ class AdminSettings extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'id', 'nama_sekolah', 'nama_kepsek', 'no_hp_sekolah', 'email_sekolah', 'logo_sekolah', 'npsn', 'alamat_sekolah', 'status'
+        'id', 'nama_sekolah', 'nama_kepsek', 'no_hp_sekolah', 'no_hp_cs', 'no_hp_admin', 'email_sekolah', 'logo_sekolah', 'npsn', 'alamat_sekolah', 'status'
     ];
 
     // Hook saat model sedang disimpan

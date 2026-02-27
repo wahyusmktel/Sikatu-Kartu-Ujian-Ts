@@ -47,6 +47,21 @@
                                 <label for="no_hp_sekolah">No HP Sekolah:</label>
                                 <input type="text" class="form-control" id="no_hp_sekolah" name="no_hp_sekolah" value="{{ $settings->no_hp_sekolah }}" required>
                             </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="no_hp_cs">WA Customer Service:</label>
+                                        <input type="text" class="form-control" id="no_hp_cs" name="no_hp_cs" value="{{ $settings->no_hp_cs }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="no_hp_admin">WA Pelayanan Administrasi:</label>
+                                        <input type="text" class="form-control" id="no_hp_admin" name="no_hp_admin" value="{{ $settings->no_hp_admin }}" required>
+                                    </div>
+                                </div>
+                            </div>
                     
                             <div class="form-group">
                                 <label for="email_sekolah">Email Sekolah:</label>

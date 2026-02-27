@@ -65,7 +65,7 @@
                 
                 <hr>
                 <div class="text-center">
-                    <p><a class="text-danger" target="_blank" href="#">&copy; 2023 | IT Team Dev</a><br>Jika ada pertanyaan hubungi <br>WA : 0821 8590 3635</p>
+                    <p><a class="text-danger" target="_blank" href="#">&copy; 2023 | IT Team Dev</a><br>Jika ada pertanyaan hubungi <br>WA : {{ $setting->no_hp_cs ?? '0821 8590 3635' }}</p>
                 </div>
             </div>
 		</div>
