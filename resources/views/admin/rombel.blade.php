@@ -87,10 +87,11 @@
                   <table class="table table-bordered table-striped">
                       <thead>
                           <tr>
-                              <th>No</th>
+                                  <th>No</th>
                               <th>Nama Rombel</th>
                               <th>Tingkat Rombel</th>
                               <th>Wali Kelas</th>
+                              <th>Anggota</th>
                               <th>Status</th>
                               <th>Aksi</th>
                           </tr>
@@ -102,12 +103,20 @@
                               <td>{{ $no++ }}</td>
                               <td>{{ $rombel->nama_rombel }}</td>
                               <td>{{ $rombel->tingkat_rombel }}</td>
-                              <td>{{ $rombel->wali_kelas }}</td>
+                              <td>{{ $rombel->wali_kelas ?? '-' }}</td>
+                              <td>
+                                  <span class="badge badge-primary">{{ $rombel->siswa_count }} siswa</span>
+                              </td>
                               <td>{{ $rombel->status ? 'Aktif' : 'Tidak Aktif' }}</td>
                               <td>
+                                  {{-- Tombol Anggota --}}
+                                  <a href="{{ route('admin.rombel.anggota', $rombel->id) }}" class="btn btn-success btn-sm">
+                                      <i class="fa fa-users"></i> Anggota
+                                  </a>
+
                                   <!-- Tombol Detail -->
                                   <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#detailModal-{{ $rombel->id }}"><i class="fa fa-eye"></i> Detail</button>
-              
+
                                   <!-- Modal Detail Rombel -->
                                   <div class="modal fade" id="detailModal-{{ $rombel->id }}" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel-{{ $rombel->id }}" aria-hidden="true">
                                       <div class="modal-dialog" role="document">
@@ -121,11 +130,15 @@
                                               <div class="modal-body">
                                                   Nama Rombel: {{ $rombel->nama_rombel }}<br>
                                                   Tingkat Rombel: {{ $rombel->tingkat_rombel }}<br>
-                                                  Wali Kelas: {{ $rombel->wali_kelas }}<br>
+                                                  Wali Kelas: {{ $rombel->wali_kelas ?? '-' }}<br>
+                                                  Jumlah Anggota: {{ $rombel->siswa_count }} siswa<br>
                                                   Status: {{ $rombel->status ? 'Aktif' : 'Tidak Aktif' }}<br>
                                               </div>
                                               <div class="modal-footer">
                                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                                  <a href="{{ route('admin.rombel.anggota', $rombel->id) }}" class="btn btn-success btn-sm">
+                                                      <i class="fa fa-users"></i> Kelola Anggota
+                                                  </a>
                                               </div>
                                           </div>
                                       </div>
@@ -134,7 +147,7 @@
                           </tr>
                           @empty
                           <tr>
-                              <td colspan="6">Data rombel tidak ditemukan.</td>
+                              <td colspan="7">Data rombel tidak ditemukan.</td>
                           </tr>
                           @endforelse
                       </tbody>

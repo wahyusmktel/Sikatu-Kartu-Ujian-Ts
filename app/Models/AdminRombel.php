@@ -43,5 +43,9 @@ class AdminRombel extends Model
         return $this->hasMany(AdminMapelCbt::class, 'id_rombel');
     }
 
+    public function siswa()
+    {
+        return $this->hasMany(\App\Models\AdminSiswa::class, 'rombel_id');
+    }
 
 }

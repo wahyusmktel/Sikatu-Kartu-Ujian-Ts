@@ -88,6 +88,9 @@ Route::group(['middleware' => 'admin.auth'], function () {
     // Rombel
     Route::get('/admin/rombel', 'App\Http\Controllers\AdminRombelController@index')->name('admin.rombel');
     Route::post('/admin/rombel', 'App\Http\Controllers\AdminRombelController@store')->name('admin.tambah_rombel');
+    Route::get('/admin/rombel/{id}/anggota', 'App\Http\Controllers\AdminRombelController@anggota')->name('admin.rombel.anggota');
+    Route::post('/admin/rombel/{id}/tambah-siswa', 'App\Http\Controllers\AdminRombelController@tambahSiswa')->name('admin.rombel.tambah_siswa');
+    Route::post('/admin/rombel/keluarkan-siswa/{id_siswa}', 'App\Http\Controllers\AdminRombelController@keluarkanSiswa')->name('admin.rombel.keluarkan_siswa');
 
 
     //Admin Szettings

@@ -31,12 +31,36 @@ class AdminSiswaController extends Controller
                 'file.mimes'    => 'Format file tidak valid. Hanya file xlsx dan xls yang diperbolehkan.'
             ]);
 
+            $countBefore = AdminSiswa::count();
+
             Excel::import(new SiswaImport, $request->file('file'));
 
-            return redirect()->back()->with('success', 'Data berhasil diimpor!');
+            $importedCount = AdminSiswa::count() - $countBefore;
+
+            $preview = AdminSiswa::latest('created_at')
+                ->take(10)
+                ->get()
+                ->map(fn($s) => [
+                    'nama'            => $s->nama,
+                    'nipd'            => $s->nipd,
+                    'nisn'            => $s->nisn,
+                    'jk'              => $s->jk,
+                    'rombel_saat_ini' => $s->rombel_saat_ini,
+                    'email'           => $s['e-mail'],
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'count'   => $importedCount,
+                'preview' => $preview,
+                'message' => "Berhasil mengimpor {$importedCount} data siswa!",
+            ]);
 
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 422);
         }
     }
 
