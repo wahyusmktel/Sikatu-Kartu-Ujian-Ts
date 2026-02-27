@@ -53,12 +53,14 @@
                                     <div class="form-group">
                                         <label for="no_hp_cs">WA Customer Service:</label>
                                         <input type="text" class="form-control" id="no_hp_cs" name="no_hp_cs" value="{{ $settings->no_hp_cs }}" required>
+                                        <small class="text-muted">Pastikan awali nomor WA dengan 62</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="no_hp_admin">WA Pelayanan Administrasi:</label>
                                         <input type="text" class="form-control" id="no_hp_admin" name="no_hp_admin" value="{{ $settings->no_hp_admin }}" required>
+                                        <small class="text-muted">Pastikan awali nomor WA dengan 62</small>
                                     </div>
                                 </div>
                             </div>
