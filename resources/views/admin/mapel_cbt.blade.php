@@ -20,6 +20,23 @@
 
 @include('admin.partials.ujian_aktif_banner')
 
+<div class="row mb-3">
+    <div class="col-12">
+        <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #fcd34d;border-left:5px solid #d97706;border-radius:10px;padding:10px 18px;display:flex;align-items:center;gap:14px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:#d97706;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-book" style="color:#fff;font-size:15px;"></i>
+            </div>
+            <div>
+                <div style="font-size:11px;color:#92400e;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Panduan Import Mata Pelajaran ke Moodle</div>
+                <div style="font-size:13px;color:#78350f;font-weight:500;">
+                    Anda dapat langsung <strong>mengimpor data mata pelajaran</strong> dari CSV halaman ini untuk <strong>membuat course ujian di Moodle</strong>.
+                    Klik tombol <span style="background:#d97706;color:#fff;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;">Ekspor ke CSV</span> lalu upload melalui menu <em>Site Administration → Courses → Upload Courses</em> di Moodle.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     <div class="page-category">
         <div class="row">
             <div class="col-md-12">

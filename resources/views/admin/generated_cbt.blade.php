@@ -14,6 +14,23 @@
 
 @include('admin.partials.ujian_aktif_banner')
 
+<div class="row mb-3">
+    <div class="col-12">
+        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-left:5px solid #16a34a;border-radius:10px;padding:10px 18px;display:flex;align-items:center;gap:14px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:#16a34a;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-file-import" style="color:#fff;font-size:15px;"></i>
+            </div>
+            <div>
+                <div style="font-size:11px;color:#15803d;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Panduan Import Moodle</div>
+                <div style="font-size:13px;color:#14532d;font-weight:500;">
+                    Anda dapat langsung <strong>mengimpor data CSV</strong> dari halaman ini ke <strong>Moodle</strong> sebagai <strong>peserta ujian</strong>.
+                    Klik tombol <span style="background:#16a34a;color:#fff;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600;">Export CSV</span> lalu upload file tersebut melalui menu <em>Site Administration → Users → Upload Users</em> di Moodle.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     .cbt-card { border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,.08); border: none; overflow: hidden; }
     .cbt-card .card-header {
