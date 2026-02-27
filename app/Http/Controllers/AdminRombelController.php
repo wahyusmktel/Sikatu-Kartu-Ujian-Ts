@@ -117,4 +117,51 @@ class AdminRombelController extends Controller
             'message' => "{$nama} berhasil dikeluarkan dari rombel.",
         ]);
     }
+
+    /**
+     * Bulk tambah siswa ke rombel (AJAX).
+     */
+    public function bulkTambahSiswa(Request $request, $id)
+    {
+        $rombel = AdminRombel::findOrFail($id);
+        $ids    = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'Pilih minimal 1 siswa.'], 422);
+        }
+
+        AdminSiswa::whereIn('id', $ids)->update([
+            'rombel_id'       => $rombel->id,
+            'rombel_saat_ini' => $rombel->nama_rombel,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'count'   => count($ids),
+            'message' => count($ids) . ' siswa berhasil ditambahkan ke rombel ' . $rombel->nama_rombel . '.',
+        ]);
+    }
+
+    /**
+     * Bulk keluarkan siswa dari rombel (AJAX).
+     */
+    public function bulkKeluarkanSiswa(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'Pilih minimal 1 siswa.'], 422);
+        }
+
+        AdminSiswa::whereIn('id', $ids)->update([
+            'rombel_id'       => null,
+            'rombel_saat_ini' => null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'count'   => count($ids),
+            'message' => count($ids) . ' siswa berhasil dikeluarkan dari rombel.',
+        ]);
+    }
 }
