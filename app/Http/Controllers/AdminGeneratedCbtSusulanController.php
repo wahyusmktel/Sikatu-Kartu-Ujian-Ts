@@ -41,7 +41,10 @@ class AdminGeneratedCbtSusulanController extends Controller
             })
             ->paginate($dataPerPage);
 
-        return view('admin.generated_cbt_susulan', compact('users', 'cari', 'allSiswa'));
+        // Ujian aktif untuk info banner
+        $ujianAktif = AdminUjian::where('status', true)->first();
+
+        return view('admin.generated_cbt_susulan', compact('users', 'cari', 'allSiswa', 'ujianAktif'));
     }
 
     public function generateUserCbtSusulan(Request $request)

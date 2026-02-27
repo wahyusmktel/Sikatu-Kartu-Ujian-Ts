@@ -12,6 +12,8 @@
 
 @section('content')
 
+@include('admin.partials.ujian_aktif_banner')
+
 <style>
     .cbt-card { border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.08); border:none; overflow:hidden; }
     .cbt-card .card-header {

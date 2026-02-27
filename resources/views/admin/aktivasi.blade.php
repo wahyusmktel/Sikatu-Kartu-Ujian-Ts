@@ -109,6 +109,7 @@
             
 
         </div>
+        @include('admin.partials.ujian_aktif_banner')
         <div class="row">
             <div class="col-md-12">
                 <div class="card">

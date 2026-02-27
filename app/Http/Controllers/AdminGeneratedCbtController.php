@@ -46,7 +46,10 @@ class AdminGeneratedCbtController extends Controller
         // Daftar rombel aktif untuk modal generate
         $rombels = AdminRombel::where('status', true)->orderBy('tingkat_rombel')->orderBy('nama_rombel')->get();
 
-        return view('admin.generated_cbt', compact('users', 'cari', 'rombels'));
+        // Ujian aktif untuk info banner
+        $ujianAktif = AdminUjian::where('status', true)->first();
+
+        return view('admin.generated_cbt', compact('users', 'cari', 'rombels', 'ujianAktif'));
     }
 
 

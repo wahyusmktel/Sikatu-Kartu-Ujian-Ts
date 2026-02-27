@@ -39,7 +39,10 @@ class AdminMapelCbtController extends Controller
         // Ambil semua rombel dengan status true untuk dropdown
         $rombels = AdminRombel::where('status', true)->get();
 
-        return view('admin.mapel_cbt', compact('mapels', 'rombels', 'cari'));
+        // Ujian aktif untuk info banner
+        $ujianAktif = AdminUjian::where('status', true)->first();
+
+        return view('admin.mapel_cbt', compact('mapels', 'rombels', 'cari', 'ujianAktif'));
     }
     
     public function store(Request $request)
