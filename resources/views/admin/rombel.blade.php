@@ -114,10 +114,62 @@
                                       <i class="fa fa-users"></i> Anggota
                                   </a>
 
-                                  <!-- Tombol Detail -->
+                                  {{-- Tombol Detail --}}
                                   <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#detailModal-{{ $rombel->id }}"><i class="fa fa-eye"></i> Detail</button>
 
-                                  <!-- Modal Detail Rombel -->
+                                  {{-- Tombol Edit --}}
+                                  <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal-{{ $rombel->id }}">
+                                      <i class="fa fa-edit"></i> Edit
+                                  </button>
+
+                                  {{-- Modal Edit Rombel --}}
+                                  <div class="modal fade" id="editModal-{{ $rombel->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel-{{ $rombel->id }}" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <h5 class="modal-title" id="editModalLabel-{{ $rombel->id }}">Edit Rombel</h5>
+                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                      <span aria-hidden="true">&times;</span>
+                                                  </button>
+                                              </div>
+                                              <div class="modal-body">
+                                                  <form action="{{ route('admin.rombel.update', $rombel->id) }}" method="post">
+                                                      @csrf
+                                                      @method('PUT')
+                                                      <div class="form-group">
+                                                          <label for="nama_rombel_{{ $rombel->id }}">Nama Rombel</label>
+                                                          <input type="text" class="form-control" id="nama_rombel_{{ $rombel->id }}" name="nama_rombel" value="{{ $rombel->nama_rombel }}" required>
+                                                      </div>
+                                                      <div class="form-group">
+                                                          <label for="tingkat_rombel_{{ $rombel->id }}">Tingkat Rombel</label>
+                                                          <select class="form-control" id="tingkat_rombel_{{ $rombel->id }}" name="tingkat_rombel" required>
+                                                              <option value="X" {{ $rombel->tingkat_rombel == 'X' ? 'selected' : '' }}>X</option>
+                                                              <option value="XI" {{ $rombel->tingkat_rombel == 'XI' ? 'selected' : '' }}>XI</option>
+                                                              <option value="XII" {{ $rombel->tingkat_rombel == 'XII' ? 'selected' : '' }}>XII</option>
+                                                          </select>
+                                                      </div>
+                                                      <div class="form-group">
+                                                          <label for="wali_kelas_{{ $rombel->id }}">Wali Kelas</label>
+                                                          <input type="text" class="form-control" id="wali_kelas_{{ $rombel->id }}" name="wali_kelas" value="{{ $rombel->wali_kelas }}">
+                                                      </div>
+                                                      <div class="form-group">
+                                                          <label for="status_{{ $rombel->id }}">Status</label>
+                                                          <select class="form-control" id="status_{{ $rombel->id }}" name="status" required>
+                                                              <option value="1" {{ $rombel->status ? 'selected' : '' }}>Aktif</option>
+                                                              <option value="0" {{ !$rombel->status ? 'selected' : '' }}>Tidak Aktif</option>
+                                                          </select>
+                                                      </div>
+                                                      <div class="modal-footer">
+                                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                                          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                                      </div>
+                                                  </form>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+
+                                  {{-- Modal Detail Rombel --}}
                                   <div class="modal fade" id="detailModal-{{ $rombel->id }}" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel-{{ $rombel->id }}" aria-hidden="true">
                                       <div class="modal-dialog" role="document">
                                           <div class="modal-content">
@@ -127,16 +179,16 @@
                                                       <span aria-hidden="true">&times;</span>
                                                   </button>
                                               </div>
-                                              <div class="modal-body">
-                                                  Nama Rombel: {{ $rombel->nama_rombel }}<br>
-                                                  Tingkat Rombel: {{ $rombel->tingkat_rombel }}<br>
-                                                  Wali Kelas: {{ $rombel->wali_kelas ?? '-' }}<br>
-                                                  Jumlah Anggota: {{ $rombel->siswa_count }} siswa<br>
-                                                  Status: {{ $rombel->status ? 'Aktif' : 'Tidak Aktif' }}<br>
+                                              <div class="modal-body text-left">
+                                                  <strong>Nama Rombel:</strong> {{ $rombel->nama_rombel }}<br>
+                                                  <strong>Tingkat Rombel:</strong> {{ $rombel->tingkat_rombel }}<br>
+                                                  <strong>Wali Kelas:</strong> {{ $rombel->wali_kelas ?? '-' }}<br>
+                                                  <strong>Jumlah Anggota:</strong> {{ $rombel->siswa_count }} siswa<br>
+                                                  <strong>Status:</strong> {{ $rombel->status ? 'Aktif' : 'Tidak Aktif' }}<br>
                                               </div>
                                               <div class="modal-footer">
                                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                                                  <a href="{{ route('admin.rombel.anggota', $rombel->id) }}" class="btn btn-success btn-sm">
+                                                  <a href="{{ route('admin.rombel.anggota', $rombel->id) }}" class="btn btn-success">
                                                       <i class="fa fa-users"></i> Kelola Anggota
                                                   </a>
                                               </div>

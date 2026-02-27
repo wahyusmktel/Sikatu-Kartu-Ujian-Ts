@@ -140,14 +140,24 @@
 							</span>
 							<h4 class="text-section">Ujian Sekolah</h4>
 						</li>
-						<li class="nav-item {{ Request::is('admin/generated_kartu','admin/aktivasi_kartu', 'admin/generated_cbt', 'admin/generated_cbt_susulan', 'admin/mapel_cbt') ? 'active submenu' : '' }}">
+						<li class="nav-item {{ Request::is('admin/generated_kartu', 'admin/generated_cbt', 'admin/generated_cbt_susulan', 'admin/mapel_cbt') ? 'active submenu' : '' }}">
 							<a data-toggle="collapse" href="#ujian">
 								<i class="far fa-envelope"></i>
 								<p>Ujian</p>
 								<span class="caret"></span>
 							</a>
-							<div class="collapse {{ Request::is('admin/generated_kartu','admin/aktivasi_kartu', 'admin/generated_cbt', 'admin/generated_cbt_susulan', 'admin/mapel_cbt') ? 'show' : '' }}" id="ujian">
+							<div class="collapse {{ Request::is('admin/generated_kartu', 'admin/generated_cbt', 'admin/generated_cbt_susulan', 'admin/mapel_cbt') ? 'show' : '' }}" id="ujian">
 								<ul class="nav nav-collapse">
+									<li>
+										<a href="/admin/generated_kartu/" class="{{ Request::is('admin/generated_kartu') ? 'active' : '' }}">
+											<span class="sub-item">Generated Kartu</span>
+										</a>
+									</li>
+									<li>
+										<a href="/admin/mapel_cbt/" class="{{ Request::is('admin/mapel_cbt') ? 'active' : '' }}">
+											<span class="sub-item">Data Mapel CBT</span>
+										</a>
+									</li>
 									<li>
 										<a href="/admin/generated_cbt/" class="{{ Request::is('admin/generated_cbt') ? 'active' : '' }}">
 											<span class="sub-item">Generated CBT User</span>
@@ -158,25 +168,16 @@
 											<span class="sub-item">Generated CBT User Susulan</span>
 										</a>
 									</li>
-									<li>
-										<a href="/admin/mapel_cbt/" class="{{ Request::is('admin/mapel_cbt') ? 'active' : '' }}">
-											<span class="sub-item">Data Mapel CBT</span>
-										</a>
-									</li>
-									<li>
-										<a href="/admin/generated_kartu/" class="{{ Request::is('admin/generated_kartu') ? 'active' : '' }}">
-											<span class="sub-item">Generated Kartu</span>
-										</a>
-									</li>
-									<li>
-										<a href="/admin/aktivasi_kartu/" class="{{ Request::is('admin/aktivasi_kartu') ? 'active' : '' }}">
-											<span class="sub-item">Aktivasi Kartu</span>
-										</a>
-									</li>
 								</ul>
 							</div>
 						</li>
-						
+
+						<li class="nav-item {{ Request::is('admin/aktivasi_kartu') ? 'active' : '' }}">
+							<a href="/admin/aktivasi_kartu/">
+								<i class="fas fa-toggle-on"></i>
+								<p>Aktivasi Kartu</p>
+							</a>
+						</li>
 						
 						<li class="nav-item {{ Request::is('admin/settings') ? 'active' : '' }}">
 							<a href="/admin/settings">

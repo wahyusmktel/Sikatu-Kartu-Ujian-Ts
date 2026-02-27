@@ -164,4 +164,23 @@ class AdminRombelController extends Controller
             'message' => count($ids) . ' siswa berhasil dikeluarkan dari rombel.',
         ]);
     }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama_rombel'    => 'required|string|max:255',
+            'tingkat_rombel' => 'required|in:X,XI,XII',
+            'wali_kelas'     => 'nullable|string|max:255',
+            'status'         => 'required|boolean',
+        ]);
+
+        $rombel                 = AdminRombel::findOrFail($id);
+        $rombel->nama_rombel    = $request->nama_rombel;
+        $rombel->tingkat_rombel = $request->tingkat_rombel;
+        $rombel->wali_kelas     = $request->wali_kelas;
+        $rombel->status         = $request->status;
+        $rombel->save();
+
+        return redirect()->route('admin.rombel')->with('success', 'Rombel berhasil diperbarui!');
+    }
 }

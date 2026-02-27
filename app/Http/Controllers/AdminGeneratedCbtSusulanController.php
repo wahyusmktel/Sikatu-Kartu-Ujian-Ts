@@ -179,4 +179,14 @@ class AdminGeneratedCbtSusulanController extends Controller
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ])->deleteFileAfterSend(true);
     }
+    public function destroy($id)
+    {
+        try {
+            $user = UserCbtSusulan::findOrFail($id);
+            $user->delete();
+            return redirect()->route('admin.generated_cbt_susulan')->with('success', 'Data user CBT Susulan berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.generated_cbt_susulan')->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
+    }
 }

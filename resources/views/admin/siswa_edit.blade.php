@@ -127,9 +127,15 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="rombel_saat_ini">Rombel</label>
-                                        <input type="text" name="rombel_saat_ini" id="rombel_saat_ini" class="form-control"
-                                            value="{{ old('rombel_saat_ini', $siswa->rombel_saat_ini) }}">
+                                        <label for="rombel_id">Rombel</label>
+                                        <select name="rombel_id" id="rombel_id" class="form-control">
+                                            <option value="">-- Pilih Rombel --</option>
+                                            @foreach($rombels as $rombel)
+                                                <option value="{{ $rombel->id }}" {{ old('rombel_id', $siswa->rombel_id) == $rombel->id ? 'selected' : '' }}>
+                                                    {{ $rombel->nama_rombel }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>

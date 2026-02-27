@@ -87,7 +87,8 @@ class AdminSiswaController extends Controller
     public function edit($id)
     {
         $siswa = AdminSiswa::findOrFail($id);
-        return view('admin.siswa_edit', compact('siswa'));
+        $rombels = \App\Models\AdminRombel::where('status', true)->orderBy('tingkat_rombel')->orderBy('nama_rombel')->get();
+        return view('admin.siswa_edit', compact('siswa', 'rombels'));
     }
 
     public function update(Request $request, $id)
@@ -106,10 +107,20 @@ class AdminSiswaController extends Controller
             'agama'           => 'nullable|string|max:50',
             'alamat'          => 'nullable|string',
             'hp'              => 'nullable|string|max:20',
-            'rombel_saat_ini' => 'nullable|string|max:100',
+            'rombel_id'       => 'nullable|exists:rombel,id',
         ]);
 
         $data = $request->except(['_token', '_method']);
+        
+        // Sync rombel_saat_ini based on rombel_id for compatibility
+        if ($request->rombel_id) {
+            $rombel = \App\Models\AdminRombel::find($request->rombel_id);
+            if ($rombel) {
+                $data['rombel_saat_ini'] = $rombel->nama_rombel;
+            }
+        } else {
+            $data['rombel_saat_ini'] = null;
+        }
 
         $siswa->update($data);
 

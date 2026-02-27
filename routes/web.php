@@ -72,11 +72,13 @@ Route::group(['middleware' => 'admin.auth'], function () {
     //Generated CBT User
     Route::get('/admin/generated_cbt', 'App\Http\Controllers\AdminGeneratedCbtController@index')->name('admin.generated_cbt');
     Route::post('/admin/generated_cbt', 'App\Http\Controllers\AdminGeneratedCbtController@generateUserCbt')->name('admin.generated_cbt_post');
+    Route::delete('/admin/generated_cbt/{id}', 'App\Http\Controllers\AdminGeneratedCbtController@destroy')->name('admin.generated_cbt.destroy');
     Route::get('/admin/export-cbt-csv', 'App\Http\Controllers\AdminGeneratedCbtController@exportToCSV')->name('admin.export_cbt_csv');
 
     //Generated CBT User Susulan
     Route::get('/admin/generated_cbt_susulan', 'App\Http\Controllers\AdminGeneratedCbtSusulanController@index')->name('admin.generated_cbt_susulan');
     Route::post('/admin/generated_cbt_susulan', 'App\Http\Controllers\AdminGeneratedCbtSusulanController@generateUserCbtSusulan')->name('admin.generated_cbt_post_susulan');
+    Route::delete('/admin/generated_cbt_susulan/{id}', 'App\Http\Controllers\AdminGeneratedCbtSusulanController@destroy')->name('admin.generated_cbt_susulan.destroy');
     Route::get('/admin/export-cbt-csv_susulan', 'App\Http\Controllers\AdminGeneratedCbtSusulanController@exportToCSV')->name('admin.export_cbt_csv_susulan');
 
     // Mapel CBT
@@ -91,6 +93,7 @@ Route::group(['middleware' => 'admin.auth'], function () {
     Route::get('/admin/rombel/{id}/anggota', 'App\Http\Controllers\AdminRombelController@anggota')->name('admin.rombel.anggota');
     Route::post('/admin/rombel/{id}/tambah-siswa', 'App\Http\Controllers\AdminRombelController@tambahSiswa')->name('admin.rombel.tambah_siswa');
     Route::post('/admin/rombel/keluarkan-siswa/{id_siswa}', 'App\Http\Controllers\AdminRombelController@keluarkanSiswa')->name('admin.rombel.keluarkan_siswa');
+    Route::put('/admin/rombel/{id}', 'App\Http\Controllers\AdminRombelController@update')->name('admin.rombel.update');
     Route::post('/admin/rombel/{id}/bulk-tambah', 'App\Http\Controllers\AdminRombelController@bulkTambahSiswa')->name('admin.rombel.bulk_tambah');
     Route::post('/admin/rombel/bulk-keluarkan', 'App\Http\Controllers\AdminRombelController@bulkKeluarkanSiswa')->name('admin.rombel.bulk_keluarkan');
 

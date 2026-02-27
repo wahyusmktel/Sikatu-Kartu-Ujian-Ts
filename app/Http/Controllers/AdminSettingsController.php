@@ -19,6 +19,10 @@ class AdminSettingsController extends Controller
     {
         $settings = AdminSettings::where('status', true)->first();
 
+        if (!$settings) {
+            $settings = new AdminSettings();
+        }
+
         return view('admin.settings', compact('settings'));
     }
 
@@ -26,11 +30,6 @@ class AdminSettingsController extends Controller
     {
         // Mencari data dengan status true
         $settings = AdminSettings::where('status', true)->first();
-
-        // Jika tidak ditemukan, maka kembalikan pesan error
-        if (!$settings) {
-            return redirect()->back()->with('error', 'Settings tidak ditemukan.');
-        }
 
         // Validasi data yang masuk
         $data = $request->validate([
@@ -50,8 +49,13 @@ class AdminSettingsController extends Controller
             $data['logo_sekolah'] = $path;
         }
 
-        // Update data settings
-        $settings->update($data);
+        // Update atau buat data settings
+        if ($settings) {
+            $settings->update($data);
+        } else {
+            $data['status'] = true;
+            AdminSettings::create($data);
+        }
 
         return redirect()->back()->with('success', 'Settings berhasil diperbarui.');
     }

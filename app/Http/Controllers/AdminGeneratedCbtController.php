@@ -212,4 +212,14 @@ class AdminGeneratedCbtController extends Controller
     }
 
 
+    public function destroy($id)
+    {
+        try {
+            $user = UserCbt::findOrFail($id);
+            $user->delete();
+            return redirect()->route('admin.generated_cbt')->with('success', 'Data user CBT berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.generated_cbt')->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
+    }
 }

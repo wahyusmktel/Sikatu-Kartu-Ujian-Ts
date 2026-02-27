@@ -31,7 +31,6 @@
                                     
                     </div>
                     <div class="card-body">
-                        @if($settings)
                         <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
@@ -66,16 +65,15 @@
                     
                             <div class="form-group">
                                 <label for="logo_sekolah">Logo Sekolah:</label><br>
-                                <img src="{{ asset('storage/' . $settings->logo_sekolah) }}" width="100" alt="Logo Sekolah"><br><br>
+                                @if($settings->logo_sekolah)
+                                    <img src="{{ asset('storage/' . $settings->logo_sekolah) }}" width="100" alt="Logo Sekolah" class="mb-2"><br>
+                                @endif
                                 <input type="file" id="logo_sekolah" name="logo_sekolah">
-                                <small class="text-muted">Biarkan kosong jika tidak ingin mengganti logo</small>
+                                <small class="text-muted d-block">Biarkan kosong jika tidak ingin mengganti logo</small>
                             </div>
                     
-                            <button type="submit" class="btn btn-primary">Perbarui</button>
-
-                        @else
-                        <p>Settings belum diatur. Silakan buat setting terlebih dahulu.</p>
-                        @endif
+                            <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
+                        </form>
                     </div>
                 </div>
             </div>

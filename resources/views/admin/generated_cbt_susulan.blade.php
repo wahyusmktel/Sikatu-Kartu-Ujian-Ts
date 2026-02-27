@@ -204,10 +204,17 @@
                                 <span class="ruang-badge empty">-</span>
                             @endif
                         </td>
-                        <td>
+                        <td class="d-flex align-items-center" style="gap:5px;">
                             <button class="btn-detail" data-toggle="modal" data-target="#detailModal-{{ $user->id }}">
                                 <i class="fa fa-eye"></i> Detail
                             </button>
+                            <form action="{{ route('admin.generated_cbt_susulan.destroy', $user->id) }}" method="POST" class="d-inline delete-form">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-sm btn-danger btn-delete-modern" style="border-radius:8px; padding: 5px 10px; font-size: 11px; font-weight: 600;">
+                                    <i class="fa fa-trash"></i> Hapus
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @empty
@@ -355,6 +362,21 @@ $(document).ready(function () {
         $.notify({ message: '{{ session('error') }}', title: 'Error!', icon: 'fa fa-times-circle' },
             { type: 'danger', placement: { from: "top", align: "right" }, time: 1000, delay: 6000 });
     @endif
+    $('.btn-delete-modern').on('click', function (e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+        swal({
+            title: "Yakin hapus data?",
+            text: "Data user CBT susulan ini akan dihapus permanen.",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                form.submit();
+            }
+        });
+    });
 });
 </script>
 
