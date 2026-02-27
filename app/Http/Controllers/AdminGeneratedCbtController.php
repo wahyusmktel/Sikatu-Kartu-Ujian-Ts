@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\KartuUjian;
 use App\Models\AdminSiswa;
 use App\Models\AdminMapelCbt;
+use App\Models\AdminRombel;
 use App\Models\UserCbt;
 use App\Models\AdminUjian;
 use Illuminate\Support\Facades\DB;
@@ -19,99 +20,118 @@ class AdminGeneratedCbtController extends Controller
 {
     public function index(Request $request)
     {
-        $cari = $request->cari; 
+        $cari = $request->cari;
         $cariLower = strtolower("%$cari%");
-        $dataPerPage = $request->input('dataPerPage', 10); 
+        $dataPerPage = $request->input('dataPerPage', 10);
 
-        // Filter berdasarkan ujian yang aktif
         $activeUjianId = AdminUjian::where('status', true)->pluck('id')->toArray();
         $users = UserCbt::with(['kartuUjian', 'siswa', 'siswa.rombel'])
             ->whereIn('id_ujian', $activeUjianId)
-            ->where('status', true)  // Menambahkan filter berdasarkan status
-            ->when($cari, function($query) use ($cariLower) {
-                return $query->whereHas('kartuUjian', function($q) use ($cariLower) {
+            ->where('status', true)
+            ->when($cari, function ($query) use ($cariLower) {
+                return $query->whereHas('kartuUjian', function ($q) use ($cariLower) {
                             $q->whereRaw('LOWER(username_ujian) LIKE ?', [$cariLower])
-                            ->orWhereRaw('LOWER(password_ujian) LIKE ?', [$cariLower]);
+                              ->orWhereRaw('LOWER(password_ujian) LIKE ?', [$cariLower]);
                         })
-                        ->orWhereHas('siswa', function($q) use ($cariLower) {
+                        ->orWhereHas('siswa', function ($q) use ($cariLower) {
                             $q->whereRaw('LOWER(nama) LIKE ?', [$cariLower])
-                            ->orWhereRaw('LOWER("e-mail") LIKE ?', [$cariLower]);
+                              ->orWhereRaw('LOWER("e-mail") LIKE ?', [$cariLower]);
                         })
-                        ->orWhereHas('siswa.rombel', function($q) use ($cariLower) {
+                        ->orWhereHas('siswa.rombel', function ($q) use ($cariLower) {
                             $q->whereRaw('LOWER(nama_rombel) LIKE ?', [$cariLower]);
                         });
             })
             ->paginate($dataPerPage);
 
-        return view('admin.generated_cbt', compact('users', 'cari'));
+        // Daftar rombel aktif untuk modal generate
+        $rombels = AdminRombel::where('status', true)->orderBy('tingkat_rombel')->orderBy('nama_rombel')->get();
+
+        return view('admin.generated_cbt', compact('users', 'cari', 'rombels'));
     }
 
 
 
-    public function generateUserCbt(Request $request) {
+    public function generateUserCbt(Request $request)
+    {
         DB::beginTransaction();
-    
+
         try {
-            $request->validate(['address' => 'required',]);
+            // Ambil array ruang (bisa semua kosong — tidak wajib diisi semua rombel)
+            $ruangPerRombel = $request->input('ruang', []);
 
-            // Mengambil id dari DataUjian dengan status true
             $dataUjian = AdminUjian::where('status', true)->first();
-
-            // Jika tidak ada data ujian dengan status true, kembalikan pesan kesalahan
             if (!$dataUjian) {
-                return redirect()->route('admin.generated_cbt')->with('error', 'Tidak ada data ujian dengan status true.');
+                return redirect()->route('admin.generated_cbt')->with('error', 'Tidak ada ujian aktif. Aktifkan ujian terlebih dahulu.');
             }
-    
-            $kartuUjians = KartuUjian::all();
 
-            $updatesRequired = false; // Menandai jika ada pembaruan yang diperlukan
-    
+            $kartuUjians = KartuUjian::with('siswa')->get();
+
+            if ($kartuUjians->isEmpty()) {
+                return redirect()->route('admin.generated_cbt')->with('error', 'Belum ada kartu ujian yang terdaftar.');
+            }
+
+            $totalProses = 0;
+
             foreach ($kartuUjians as $kartu) {
                 $siswa = $kartu->siswa;
-    
-                // $mapels = AdminMapelCbt::where('id_rombel', $siswa->rombel_id)->get();
+
+                // Skip jika kartu tidak punya siswa
+                if (!$siswa) {
+                    \Log::warning('GenerateCBT: KartuUjian ID ' . $kartu->id . ' tidak memiliki siswa.');
+                    continue;
+                }
+
+                // Tentukan nama ruang berdasarkan rombel_id siswa
+                $namaRuang = '-';
+                if ($siswa->rombel_id && array_key_exists($siswa->rombel_id, $ruangPerRombel)) {
+                    $filled = trim($ruangPerRombel[$siswa->rombel_id]);
+                    if ($filled !== '') {
+                        $namaRuang = $filled;
+                    }
+                }
+
                 $mapels = AdminMapelCbt::where('id_rombel', $siswa->rombel_id)
                     ->where('id_ujian', $dataUjian->id)
                     ->get();
 
                 $courses = [];
-
                 foreach ($mapels as $index => $mapel) {
-                    $fullnameCleaned = str_replace(',', '_', $mapel->fullname);
-                    $shortnameSegment2 = strtoupper(Str::slug($mapel->rombel->tingkat_rombel, '_'));
-                    $fullname2 = $fullnameCleaned . ' Kelas ' . str_replace('_', ' ', $shortnameSegment2);
-                    $shortname = $mapel->shortname . '_' . $fullname2;
-
+                    $fullnameCleaned  = str_replace(',', '_', $mapel->fullname);
+                    $shortnameSegment = strtoupper(Str::slug($mapel->rombel->tingkat_rombel, '_'));
+                    $fullname2        = $fullnameCleaned . ' Kelas ' . str_replace('_', ' ', $shortnameSegment);
+                    $shortname        = $mapel->shortname . '_' . $fullname2;
                     $courses['course' . ($index + 1)] = $shortname;
                 }
 
-                $existingUserCbt = UserCbt::where('id_siswa', $siswa->id)->where('id_ujian', $dataUjian->id)->first();
+                $existingUserCbt = UserCbt::where('id_siswa', $siswa->id)
+                    ->where('id_ujian', $dataUjian->id)
+                    ->first();
 
-                // Data untuk insert atau update
                 $dataToSave = [
                     'id_kartu_ujian' => $kartu->id,
-                    'id_siswa' => $siswa->id,
-                    'address' => $request->address,
-                    'id_ujian' => $dataUjian->id
+                    'id_siswa'       => $siswa->id,
+                    'address'        => $namaRuang,
+                    'id_ujian'       => $dataUjian->id,
+                    'status'         => true,
                 ] + $courses;
-    
+
                 if ($existingUserCbt) {
                     $existingUserCbt->update($dataToSave);
+                    \Log::info('GenerateCBT: UPDATE siswa ' . $siswa->nama . ' ruang=' . $namaRuang);
                 } else {
                     UserCbt::create($dataToSave);
+                    \Log::info('GenerateCBT: CREATE siswa ' . $siswa->nama . ' ruang=' . $namaRuang);
                 }
+
+                $totalProses++;
             }
 
-            // Jika ada pembaruan yang diperlukan, kembalikan ke view dengan pesan konfirmasi
-            if ($updatesRequired) {
-                return redirect()->route('admin.generated_cbt')->with('updateConfirmationNeeded', true);
-            }
-    
             DB::commit();
-            return redirect()->route('admin.generated_cbt')->with('success', 'Data user CBT berhasil di-generate.');
-            
+            return redirect()->route('admin.generated_cbt')->with('success', "Data user CBT berhasil di-generate. Total: {$totalProses} siswa diproses.");
+
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::error('GenerateCBT Error: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
             return redirect()->route('admin.generated_cbt')->with('error', 'Ada masalah: ' . $e->getMessage());
         }
     }
