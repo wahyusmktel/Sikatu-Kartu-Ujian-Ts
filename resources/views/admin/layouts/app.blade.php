@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>@yield('page-title', 'Default Title') | Aplikasi Sistem Informasi SMK Telkom Lampung</title>
+	<title>@yield('page-title', 'Default Title') | {{ $setting->nama_sekolah ?? 'Aplikasi Sistem Informasi' }}</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 	<link rel="icon" href="{{ asset('assets/img/ts.png') }}" type="image/x-icon"/>
 

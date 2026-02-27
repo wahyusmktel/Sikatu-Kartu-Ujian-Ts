@@ -53,10 +53,13 @@
                                                 @csrf
                                                 <div class="form-group">
                                                     <label for="fileImport">Pilih File Excel:</label>
-                                                    <div class="custom-file">
+                                                    <div class="custom-file mb-2">
                                                         <input type="file" class="custom-file-input" id="fileImport" name="file" accept=".xlsx,.xls" required>
                                                         <label class="custom-file-label" for="fileImport">Pilih file...</label>
                                                     </div>
+                                                    <small class="form-text text-muted">
+                                                        Silahkan download format excel import <a href="{{ asset('Format_Import_Siswa.xlsx') }}" class="text-primary fw-bold" download>Klik Disini</a>
+                                                    </small>
                                                 </div>
                                             </form>
                                         </div>
