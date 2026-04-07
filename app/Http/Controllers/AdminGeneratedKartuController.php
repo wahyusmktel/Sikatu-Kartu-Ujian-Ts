@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\KartuUjian;
 use App\Models\AdminUjian;
 use App\Models\AdminSiswa;
+use App\Exports\KartuUjianUpdateExport;
+use App\Imports\KartuUjianUpdateImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminGeneratedKartuController extends Controller
 {   
@@ -104,6 +107,56 @@ class AdminGeneratedKartuController extends Controller
             return redirect()->route('admin.kartu')->with('success', 'Data kartu ujian berhasil diperbarui.');
         } catch (\Exception $e) {
             \DB::rollback();
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Download format Excel untuk update username & password ujian secara massal.
+     */
+    public function downloadUpdateFormat()
+    {
+        return Excel::download(new KartuUjianUpdateExport, 'Format_Update_Username_Password_Ujian.xlsx');
+    }
+
+    /**
+     * Proses import Excel untuk update username & password ujian secara massal.
+     */
+    public function importUpdate(Request $request)
+    {
+        $request->validate([
+            'file_update' => 'required|mimes:xlsx,xls',
+        ], [
+            'file_update.required' => 'File Excel harus diunggah.',
+            'file_update.mimes'    => 'Format file tidak valid. Hanya xlsx dan xls yang diperbolehkan.',
+        ]);
+
+        try {
+            $importer = new KartuUjianUpdateImport;
+
+            $file     = $request->file('file_update');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $tempDir  = storage_path('app/temp');
+
+            if (!file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
+
+            $movedFile = $file->move($tempDir, $fileName);
+            $fullPath  = $movedFile->getPathname();
+
+            Excel::import($importer, $fullPath);
+
+            if (file_exists($fullPath)) {
+                @unlink($fullPath);
+            }
+
+            $updated = $importer->getUpdated();
+            $skipped = $importer->getSkipped();
+
+            return redirect()->route('admin.kartu')
+                ->with('success', "Berhasil memperbarui {$updated} data kartu ujian" . ($skipped > 0 ? " ({$skipped} baris dilewati)." : '.'));
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }

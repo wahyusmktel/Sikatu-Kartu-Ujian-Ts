@@ -36,6 +36,11 @@
                         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#generateKartuUjianModal">
                             <i class="fa fa-credit-card"></i> Generated Kartu Ujian
                         </button>
+
+                        <!-- Tombol Update Data -->
+                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#updateDataKartuModal">
+                            <i class="fa fa-upload"></i> Update Data
+                        </button>
                         
                         </div>
                         <!-- Modal -->
@@ -89,7 +94,133 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>                        
+                        </div>
+
+                        {{-- ================================================================== --}}
+                        {{-- MODAL UPDATE DATA (USERNAME & PASSWORD MASSAL) --}}
+                        {{-- ================================================================== --}}
+                        <div class="modal fade" id="updateDataKartuModal" tabindex="-1" role="dialog"
+                            aria-labelledby="updateDataKartuModalLabel" aria-hidden="true"
+                            data-backdrop="static" data-keyboard="false">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+
+                                    <div class="modal-header bg-warning text-dark">
+                                        <h5 class="modal-title" id="updateDataKartuModalLabel">
+                                            <i class="fa fa-upload"></i> Update Username &amp; Password Ujian (Massal)
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                            id="btnCloseUpdateModal">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="modal-body">
+
+                                        {{-- STEP 1: Panduan & Download Format --}}
+                                        <div id="updateStep1">
+                                            {{-- Panduan langkah-langkah --}}
+                                            <div class="alert alert-info" style="border-radius:8px;">
+                                                <p class="mb-2 font-weight-bold"><i class="fa fa-info-circle"></i>
+                                                    Panduan Update Data Massal</p>
+                                                <ol class="mb-0 pl-3" style="font-size:13px; line-height:2;">
+                                                    <li>
+                                                        <strong>Download</strong> format Excel dengan menekan tombol
+                                                        <em>"Download Format Excel"</em> di bawah.<br>
+                                                        <small class="text-muted">File berisi daftar seluruh siswa ujian aktif beserta username &amp; password saat ini.</small>
+                                                    </li>
+                                                    <li>
+                                                        <strong>Buka file</strong> Excel yang sudah didownload.
+                                                    </li>
+                                                    <li>
+                                                        Edit kolom <span class="badge badge-success">Username Ujian</span>
+                                                        dan <span class="badge badge-success">Password Ujian</span> sesuai data baru yang diinginkan.
+                                                    </li>
+                                                    <li>
+                                                        <span class="text-danger font-weight-bold">Jangan hapus atau ubah</span> kolom
+                                                        <span class="badge badge-secondary">ID (Jangan Diubah)</span> — kolom ini digunakan sistem untuk mengenali data.
+                                                    </li>
+                                                    <li>
+                                                        <strong>Simpan file</strong> Excel (tetap dalam format .xlsx atau .xls).
+                                                    </li>
+                                                    <li>
+                                                        Tekan tombol <em>"Lanjut Import"</em> lalu pilih file yang sudah diedit dan klik <em>"Upload &amp; Update"</em>.
+                                                    </li>
+                                                </ol>
+                                            </div>
+
+                                            <div class="text-center mt-3">
+                                                <a href="{{ route('admin.kartu.download_format') }}"
+                                                   class="btn btn-success btn-sm" id="btnDownloadFormat">
+                                                    <i class="fa fa-download"></i> Download Format Excel
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        {{-- STEP 2: Upload File --}}
+                                        <div id="updateStep2" style="display:none;">
+                                            <form id="formUpdateKartu" enctype="multipart/form-data"
+                                                action="{{ route('admin.kartu.import_update') }}" method="POST">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <label for="fileUpdate" class="font-weight-bold">
+                                                        <i class="fa fa-file-excel text-success"></i>
+                                                        Pilih File Excel yang sudah diedit:
+                                                    </label>
+                                                    <div class="custom-file mb-2">
+                                                        <input type="file" class="custom-file-input" id="fileUpdate"
+                                                            name="file_update" accept=".xlsx,.xls" required>
+                                                        <label class="custom-file-label" for="fileUpdate">Pilih
+                                                            file...</label>
+                                                    </div>
+                                                    <small class="form-text text-muted mt-2">
+                                                        <i class="fa fa-exclamation-circle text-warning"></i>
+                                                        Pastikan file yang diunggah adalah format Excel yang sudah Anda
+                                                        download dan edit (kolom ID tidak diubah).
+                                                    </small>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        {{-- STEP 3: Loading --}}
+                                        <div id="updateStep3" style="display:none;">
+                                            <div class="text-center py-4">
+                                                <i class="fa fa-spinner fa-spin fa-3x text-warning"></i>
+                                                <p class="mt-3 font-weight-bold" id="updateStatusText">Memproses
+                                                    data...</p>
+                                                <small class="text-muted">Mohon tunggu, jangan tutup halaman
+                                                    ini.</small>
+                                            </div>
+                                        </div>
+
+                                    </div>{{-- end modal-body --}}
+
+                                    <div class="modal-footer" id="updateModalFooter">
+                                        {{-- Footer Step 1 --}}
+                                        <div id="footerStep1">
+                                            <button type="button" class="btn btn-secondary btn-sm"
+                                                data-dismiss="modal">Batal</button>
+                                            <button type="button" class="btn btn-warning btn-sm"
+                                                id="btnGoToStep2">
+                                                <i class="fa fa-arrow-right"></i> Lanjut Import
+                                            </button>
+                                        </div>
+                                        {{-- Footer Step 2 --}}
+                                        <div id="footerStep2" style="display:none;">
+                                            <button type="button" class="btn btn-secondary btn-sm"
+                                                id="btnBackToStep1"><i class="fa fa-arrow-left"></i> Kembali</button>
+                                            <button type="button" class="btn btn-success btn-sm"
+                                                id="btnSubmitUpdate">
+                                                <i class="fa fa-upload"></i> Upload &amp; Update
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        {{-- END MODAL UPDATE DATA --}}
+
                         <div class="pull-right">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="collapse" id="search-nav">
@@ -235,12 +366,65 @@
             // Event listener saat radio button berubah
             $("input[name='siswa_option']").change(function() {
                 if ($(this).val() == 'exclude_siswa') {
-                    // Jika opsi "Kecualikan Siswa" dipilih, tampilkan formnya
                     $('#excludeSiswa').slideDown();
                 } else {
-                    // Jika opsi lain dipilih, sembunyikan formnya
                     $('#excludeSiswa').slideUp();
                 }
+            });
+
+            // ===== Modal Update Data =====
+
+            // Reset modal saat dibuka
+            $('#updateDataKartuModal').on('show.bs.modal', function () {
+                $('#updateStep1').show();
+                $('#updateStep2').hide();
+                $('#updateStep3').hide();
+                $('#footerStep1').show();
+                $('#footerStep2').hide();
+                $('#formUpdateKartu')[0].reset();
+                $('.custom-file-label').text('Pilih file...');
+            });
+
+            // Update label file input
+            $(document).on('change', '#fileUpdate', function () {
+                var fileName = $(this).val().split('\\').pop();
+                $(this).siblings('.custom-file-label').text(fileName || 'Pilih file...');
+            });
+
+            // Tombol Lanjut Import (Step 1 → Step 2)
+            $('#btnGoToStep2').on('click', function () {
+                $('#updateStep1').hide();
+                $('#updateStep2').show();
+                $('#footerStep1').hide();
+                $('#footerStep2').show();
+            });
+
+            // Tombol Kembali (Step 2 → Step 1)
+            $('#btnBackToStep1').on('click', function () {
+                $('#updateStep2').show();
+                $('#updateStep1').show();
+                $('#updateStep2').hide();
+                $('#footerStep2').hide();
+                $('#footerStep1').show();
+            });
+
+            // Tombol Upload & Update (submit form)
+            $('#btnSubmitUpdate').on('click', function () {
+                var fileInput = $('#fileUpdate')[0];
+                if (!fileInput.files.length) {
+                    alert('Silakan pilih file Excel terlebih dahulu!');
+                    return;
+                }
+
+                // Tampilkan loading
+                $('#updateStep2').hide();
+                $('#updateStep3').show();
+                $('#footerStep2').hide();
+                $('#btnCloseUpdateModal').hide();
+                $('#updateStatusText').text('Mengunggah dan memproses data...');
+
+                // Submit form
+                $('#formUpdateKartu').submit();
             });
         });
     </script>

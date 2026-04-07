@@ -61,6 +61,8 @@ Route::group(['middleware' => 'admin.auth'], function () {
     //Genereted Kartu
     Route::get('/admin/generated_kartu', 'App\Http\Controllers\AdminGeneratedKartuController@index')->name('admin.kartu');
     Route::post('/admin/generated_kartu', 'App\Http\Controllers\AdminGeneratedKartuController@generate')->name('admin.generate');
+    Route::get('/admin/generated_kartu/download-format-update', 'App\Http\Controllers\AdminGeneratedKartuController@downloadUpdateFormat')->name('admin.kartu.download_format');
+    Route::post('/admin/generated_kartu/import-update', 'App\Http\Controllers\AdminGeneratedKartuController@importUpdate')->name('admin.kartu.import_update');
 
     //Aktivasi Kartu
     Route::get('/admin/aktivasi_kartu', 'App\Http\Controllers\AdminAktivasiKartuController@index')->name('admin.aktivasi');
